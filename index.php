@@ -1,14 +1,11 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem Manajemen Sepatu</title>
-
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -24,6 +21,8 @@
             >
                 <span class="navbar-toggler-icon"></span>
             </button>
+
+            <!-- Bagian dalam collapse (Wishlist + Mode Gelap) -->
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <button
                     class="btn btn-outline-warning btn-sm me-2"
@@ -36,6 +35,23 @@
                     Mode Gelap
                 </button>
             </div>
+
+            <!-- Bagian di luar collapse: selalu terlihat -->
+            <?php if (isset($_SESSION['user'])): ?>
+                <div class="d-flex align-items-center ms-2 gap-2">
+                    <span class="text-warning fw-semibold" style="font-size:0.85rem;">
+                        👤 <?php echo htmlspecialchars($_SESSION['user']); ?>
+                    </span>
+                    <a href="controller/logout.php" class="btn btn-outline-danger btn-sm">
+                        Logout
+                    </a>
+                </div>
+            <?php else: ?>
+                <a href="login.php" class="btn btn-warning btn-sm ms-2">
+                    Login
+                </a>
+            <?php endif; ?>
+
         </div>
     </nav>
 
@@ -78,7 +94,6 @@
     </div>
 
     <!-- Modal Wishlist -->
-    <!-- FIX: Struktur modal diperbaiki, tambah id="wishlistItems" dan id="btnKosongkanWishlist" -->
     <div class="modal fade" id="wishlistModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -87,14 +102,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- FIX: ul dengan id yang dibutuhkan JavaScript untuk render item -->
-                    <ul class="list-group" id="wishlistItems">
-                        <!-- Item wishlist akan dirender oleh JavaScript -->
-                    </ul>
+                    <ul class="list-group" id="wishlistItems"></ul>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    <!-- FIX: Tambah id agar bisa diakses JavaScript -->
                     <button type="button" class="btn btn-danger" id="btnKosongkanWishlist">Kosongkan</button>
                 </div>
             </div>
@@ -113,11 +124,9 @@
                     <div class="card-body">
                         <h5 class="card-title">Nike P 6000</h5>
                         <p class="card-text">Harga: Rp 1.420.000</p>
-                        <!-- FIX: Tambah class stok-text agar bisa diubah saat tombol Beli diklik -->
                         <p class="card-text stok-text">Stok: 10</p>
                         <div class="d-flex justify-content-between">
                             <button class="btn btn-primary btn-detail w-50 me-2">Beli</button>
-                            <!-- FIX: Tambah data-nama agar wishlist tahu nama produknya -->
                             <button class="btn btn-outline-danger btn-wishlist w-50" data-nama="Nike P 6000">❤️ Wishlist</button>
                         </div>
                     </div>
@@ -159,7 +168,8 @@
         </div>
     </div>
 
-    <!-- Form Tambah Sepatu -->
+    <!-- Form Tambah Sepatu (hanya tampil jika sudah login) -->
+    <?php if (isset($_SESSION['user'])): ?>
     <div class="container mt-5 mb-5">
         <h3 class="mb-4">Tambah Sepatu</h3>
         <div class="card p-4">
@@ -188,6 +198,13 @@
             </form>
         </div>
     </div>
+    <?php else: ?>
+    <div class="container mt-5 mb-5">
+        <div class="alert alert-warning text-center">
+            🔒 <a href="login.php" class="alert-link">Login</a> untuk mengakses fitur tambah produk.
+        </div>
+    </div>
+    <?php endif; ?>
 
     <!-- Footer -->
     <footer class="bg-dark text-white text-center py-3">© 2026 Sistem Manajemen Sepatu Cibaduyut</footer>
